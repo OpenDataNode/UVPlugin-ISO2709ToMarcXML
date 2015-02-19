@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>eu.unifiedviews.plugins</groupId>
+		<artifactId>dpu-base-pom</artifactId>
+		<version>1.2.0</version>
+		<relativePath></relativePath>
+	</parent>
+
+	<groupId>eu.unifiedviews.plugins</groupId>
+	<artifactId>uv-t-ISO2709ToMarcXML</artifactId>
+
+	<name>T-ISO2709ToMarcXML</name>
+	<version>1.0.0-SNAPSHOT</version>
+	<description>Transforms ISO 2709 (mrc) files to a XML files on output.</description>
+	<packaging>bundle</packaging>
+
+	<repositories>
+		<repository>
+			<id>maven.eea.sk</id>
+			<name>maven.eea.sk-public</name>
+			<url>http://maven.eea.sk/artifactory/public/</url>
+		</repository>
+	</repositories>
+
+	<properties>
+		<dpu.package>eu.unifiedviews.plugins.marc</dpu.package>
+		<dpu.mainClass>ISO2709ToMarcXML</dpu.mainClass>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient-osgi</artifactId>
+			<version>4.3.3</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore-osgi</artifactId>
+			<version>4.3.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+			<version>4.3.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.jsch</artifactId>
+			<version>0.1.49_1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>cz.cuni.mff.xrg.odcs</groupId>
+			<artifactId>module-test</artifactId>
+			<version>${module-test.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+		    <groupId>info.freelibrary</groupId>
+		    <artifactId>freelib-marc4j</artifactId>
+		    <version>2.6.3</version>
+		</dependency>
+	</dependencies>
+</project>
