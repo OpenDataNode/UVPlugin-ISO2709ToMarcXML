@@ -55,12 +55,12 @@ public class ISO2709ToMarcXML extends ConfigurableBase<ISO2709ToMarcXMLConfig_V1
      */
     @DataUnit.AsOutput(name = "filesOutput")
     public WritableFilesDataUnit filesOutput;
-    
+
     /**
      * We define class used for retrieving internationalized messages.
      */
     private Messages messages;
-    
+
     private static final String ENCODING_STRING = "UTF-8";
 
     /**
@@ -81,7 +81,7 @@ public class ISO2709ToMarcXML extends ConfigurableBase<ISO2709ToMarcXMLConfig_V1
     @Override
     public void execute(DPUContext dpuContext) throws DPUException {
         Locale locale = dpuContext.getLocale();
-        
+
         this.messages = new Messages(locale, this.getClass().getClassLoader());
 
         String shortMessage = this.getClass().getSimpleName() + " starting.";
@@ -110,28 +110,31 @@ public class ISO2709ToMarcXML extends ConfigurableBase<ISO2709ToMarcXMLConfig_V1
                 if (dpuContext.isDebugging()) {
                     LOG.debug("Processing {}. file {}", index, entry);
                 }
-                
+
                 try {
                     File inputFile = new File(URI.create(entry.getFileURIString()));
-                    
+
                     outputMarcXMLFile = File.createTempFile("___", inputFile.getName(), new File(URI.create(filesOutput.getBaseFileURIString())));
 
                     FileInputStream is = new FileInputStream(inputFile);
                     FileOutputStream os = new FileOutputStream(outputMarcXMLFile);
-                    
+
                     MarcReader reader = new MarcStreamReader(is, ENCODING_STRING);
                     MarcWriter writer = new MarcXmlWriter(os, true);
-                    
-                    while (reader.hasNext()) {
-                        Record record = reader.next();
-                        writer.write(record);
+                    try {
+                        while (reader.hasNext()) {
+                            Record record = reader.next();
+                            writer.write(record);
+                        }
+                    } finally {
+                        try {
+                            is.close();
+                        } catch (IOException ex) {
+                        }
+                        writer.close();
                     }
-                    
-                    is.close();
-                    writer.close();
-                    
                     filesOutput.addExistingFile(entry.getSymbolicName(), outputMarcXMLFile.toURI().toASCIIString());
-                    
+
                     if (dpuContext.isDebugging()) {
                         LOG.debug("Processed {}. file in {}s", index, (System.currentTimeMillis() - start.getTime()) / 1000);
                     }
@@ -142,7 +145,7 @@ public class ISO2709ToMarcXML extends ConfigurableBase<ISO2709ToMarcXMLConfig_V1
                         throw new DPUException(messages.getString("error.process.mrc", String.valueOf(entry)), e);
                     }
                 }
-                
+
                 shouldContinue = !dpuContext.canceled();
             }
         } catch (DataUnitException ex) {
@@ -151,6 +154,10 @@ public class ISO2709ToMarcXML extends ConfigurableBase<ISO2709ToMarcXMLConfig_V1
              */
             throw new DPUException(messages.getString("errors.dpu.failed"), ex);
         } finally {
+            try {
+                filesIteration.close();
+            } catch (DataUnitException ex) {
+            }
         }
     }
 }

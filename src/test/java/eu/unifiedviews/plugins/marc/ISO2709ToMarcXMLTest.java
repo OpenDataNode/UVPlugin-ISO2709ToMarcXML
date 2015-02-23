@@ -20,7 +20,6 @@ import eu.unifiedviews.dataunit.files.FilesDataUnit;
 import eu.unifiedviews.dataunit.files.WritableFilesDataUnit;
 import eu.unifiedviews.helpers.dataunit.fileshelper.FilesHelper;
 
-
 public class ISO2709ToMarcXMLTest {
     private static final Logger LOG = LoggerFactory.getLogger(ISO2709ToMarcXMLTest.class);
 
@@ -39,10 +38,10 @@ public class ISO2709ToMarcXMLTest {
 
         InputStream mrcFileIS = Thread.currentThread().getContextClassLoader()
                 .getResourceAsStream("comsode.mrc");
-        
+
         File tempMrcFile = File.createTempFile("___", ".mrc");
         FileUtils.copyInputStreamToFile(mrcFileIS, tempMrcFile);
-        
+
         try {
             filesInput.addExistingFile("test", URI.create(tempMrcFile.toURI().toASCIIString()).toString());
 
@@ -54,24 +53,23 @@ public class ISO2709ToMarcXMLTest {
             FilesDataUnit.Entry outputFile = null;
             outputFile = outputFiles.iterator().next();
             assertNotNull(outputFile);
-            
+
             String xml = IOUtils.toString(java.net.URI.create(outputFile.getFileURIString()), "UTF-8");
             assertTrue(!xml.isEmpty());
-            
         } catch (Exception e) {
             LOG.error("Some exception when performing test", e);
         } finally {
             if (mrcFileIS != null) {
                 mrcFileIS.close();
             }
-            
+
             if (tempMrcFile != null && tempMrcFile.exists()) {
                 tempMrcFile.delete();
                 LOG.debug("tmp file deleted");
             }
-            
+
             env.release();
-            
+
         }
     }
 }
