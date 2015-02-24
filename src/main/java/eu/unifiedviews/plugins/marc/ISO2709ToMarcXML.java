@@ -61,8 +61,6 @@ public class ISO2709ToMarcXML extends ConfigurableBase<ISO2709ToMarcXMLConfig_V1
      */
     private Messages messages;
 
-    private static final String ENCODING_STRING = "UTF-8";
-
     /**
      * Public non-parametric constructor has to call super constructor in {@link ConfigurableBase}
      */
@@ -118,8 +116,12 @@ public class ISO2709ToMarcXML extends ConfigurableBase<ISO2709ToMarcXMLConfig_V1
 
                     FileInputStream is = new FileInputStream(inputFile);
                     FileOutputStream os = new FileOutputStream(outputMarcXMLFile);
-
-                    MarcReader reader = new MarcStreamReader(is, ENCODING_STRING);
+                    MarcReader reader;
+                    if ("AUTO".equalsIgnoreCase(config.getCharset())) {
+                        reader = new MarcStreamReader(is);
+                    } else {
+                        reader = new MarcStreamReader(is, config.getCharset());
+                    }
                     MarcWriter writer = new MarcXmlWriter(os, true);
                     try {
                         while (reader.hasNext()) {
