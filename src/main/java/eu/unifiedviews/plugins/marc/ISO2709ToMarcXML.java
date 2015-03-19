@@ -6,8 +6,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Date;
-import java.util.Locale;
 
+import eu.unifiedviews.helpers.dpu.config.ConfigHistory;
+import eu.unifiedviews.helpers.dpu.config.migration.ConfigurationUpdate;
+import eu.unifiedviews.helpers.dpu.context.ContextUtils;
+import eu.unifiedviews.helpers.dpu.exec.AbstractDpu;
+import eu.unifiedviews.helpers.dpu.extension.ExtensionInitializer;
+import eu.unifiedviews.helpers.dpu.extension.faulttolerance.FaultTolerance;
 import org.marc4j.MarcReader;
 import org.marc4j.MarcStreamReader;
 import org.marc4j.MarcWriter;
@@ -23,10 +28,6 @@ import eu.unifiedviews.dataunit.files.WritableFilesDataUnit;
 import eu.unifiedviews.dpu.DPU;
 import eu.unifiedviews.dpu.DPUContext;
 import eu.unifiedviews.dpu.DPUException;
-import eu.unifiedviews.helpers.dpu.config.AbstractConfigDialog;
-import eu.unifiedviews.helpers.dpu.config.ConfigDialogProvider;
-import eu.unifiedviews.helpers.dpu.config.ConfigurableBase;
-import eu.unifiedviews.helpers.dpu.localization.Messages;
 
 /**
  * We choose the type of this {@link DPU}, it can be {@link DPU.AsExtractor}, {@link DPU.AsLoader}, {@link DPU.AsTransformer}.
@@ -38,7 +39,7 @@ import eu.unifiedviews.helpers.dpu.localization.Messages;
  * </pre></blockquote></p>
  */
 @DPU.AsTransformer
-public class ISO2709ToMarcXML extends ConfigurableBase<ISO2709ToMarcXMLConfig_V1> implements ConfigDialogProvider<ISO2709ToMarcXMLConfig_V1> {
+public class ISO2709ToMarcXML extends AbstractDpu<ISO2709ToMarcXMLConfig_V1> {
     /**
      * We use slf4j for logging
      */
@@ -56,46 +57,32 @@ public class ISO2709ToMarcXML extends ConfigurableBase<ISO2709ToMarcXMLConfig_V1
     @DataUnit.AsOutput(name = "filesOutput")
     public WritableFilesDataUnit filesOutput;
 
-    /**
-     * We define class used for retrieving internationalized messages.
-     */
-    private Messages messages;
+    @ExtensionInitializer.Init
+    public FaultTolerance faultTolerance;
 
-    /**
-     * Public non-parametric constructor has to call super constructor in {@link ConfigurableBase}
-     */
+    @ExtensionInitializer.Init(param = "eu.unifiedviews.plugins.marc.ISO2709ToMarcXMLConfig_V1")
+    public ConfigurationUpdate _ConfigurationUpdate;
+
     public ISO2709ToMarcXML() {
-        super(ISO2709ToMarcXMLConfig_V1.class);
-    }
-
-    /**
-     * Simple getter which is used by container to obtain configuration dialog instance.
-     */
-    @Override
-    public AbstractConfigDialog<ISO2709ToMarcXMLConfig_V1> getConfigurationDialog() {
-        return new ISO2709ToMarcXMLVaadinDialog();
+        super(ISO2709ToMarcXMLVaadinDialog.class, ConfigHistory.noHistory(ISO2709ToMarcXMLConfig_V1.class));
     }
 
     @Override
-    public void execute(DPUContext dpuContext) throws DPUException {
-        Locale locale = dpuContext.getLocale();
-
-        this.messages = new Messages(locale, this.getClass().getClassLoader());
-
+    protected void innerExecute() throws DPUException {
         String shortMessage = this.getClass().getSimpleName() + " starting.";
         String longMessage = String.valueOf(config);
 
-        dpuContext.sendMessage(DPUContext.MessageType.INFO, shortMessage, longMessage);
+        ContextUtils.sendMessage(ctx, DPUContext.MessageType.INFO, shortMessage, longMessage);
 
         FilesDataUnit.Iteration filesIteration;
         try {
             filesIteration = filesInput.getIteration();
         } catch (DataUnitException ex) {
-            throw new DPUException(messages.getString("error.obtain.input"), ex);
+            throw ContextUtils.dpuException(ctx, ex, "error.obtain.input");
         }
 
         long index = 0L;
-        boolean shouldContinue = !dpuContext.canceled();
+        boolean shouldContinue = !ctx.canceled();
         File outputMarcXMLFile = null;
         Date start = null;
         try {
@@ -105,7 +92,7 @@ public class ISO2709ToMarcXML extends ConfigurableBase<ISO2709ToMarcXMLConfig_V1
                 entry = filesIteration.next();
 
                 start = new Date();
-                if (dpuContext.isDebugging()) {
+                if (ctx.getExecMasterContext().getDpuContext().isDebugging()) {
                     LOG.debug("Processing {}. file {}", index, entry);
                 }
 
@@ -137,24 +124,24 @@ public class ISO2709ToMarcXML extends ConfigurableBase<ISO2709ToMarcXMLConfig_V1
                     }
                     filesOutput.addExistingFile(entry.getSymbolicName(), outputMarcXMLFile.toURI().toASCIIString());
 
-                    if (dpuContext.isDebugging()) {
+                    if (ctx.getExecMasterContext().getDpuContext().isDebugging()) {
                         LOG.debug("Processed {}. file in {}s", index, (System.currentTimeMillis() - start.getTime()) / 1000);
                     }
                 } catch (DataUnitException | IOException e) {
                     if (config.isSkipOnError()) {
                         LOG.warn("Error processing {}. file {}", index, String.valueOf(entry), e);
                     } else {
-                        throw new DPUException(messages.getString("error.process.mrc", String.valueOf(entry)), e);
+                        throw ContextUtils.dpuException(ctx, e, "error.process.mrc", String.valueOf(entry));
                     }
                 }
 
-                shouldContinue = !dpuContext.canceled();
+                shouldContinue = !ctx.canceled();
             }
         } catch (DataUnitException ex) {
             /**
              * There is nothing we can do
              */
-            throw new DPUException(messages.getString("errors.dpu.failed"), ex);
+            throw ContextUtils.dpuException(ctx, ex, "errors.dpu.failed");
         } finally {
             try {
                 filesIteration.close();

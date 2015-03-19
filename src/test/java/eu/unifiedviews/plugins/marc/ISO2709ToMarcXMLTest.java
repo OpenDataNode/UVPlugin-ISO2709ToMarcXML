@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Set;
 
+import eu.unifiedviews.helpers.dataunit.files.FilesHelper;
+import eu.unifiedviews.helpers.dpu.test.config.ConfigurationBuilder;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
@@ -18,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import cz.cuni.mff.xrg.odcs.dpu.test.TestEnvironment;
 import eu.unifiedviews.dataunit.files.FilesDataUnit;
 import eu.unifiedviews.dataunit.files.WritableFilesDataUnit;
-import eu.unifiedviews.helpers.dataunit.fileshelper.FilesHelper;
 
 public class ISO2709ToMarcXMLTest {
     private static final Logger LOG = LoggerFactory.getLogger(ISO2709ToMarcXMLTest.class);
@@ -27,7 +28,7 @@ public class ISO2709ToMarcXMLTest {
     public void test1() throws Exception {
         ISO2709ToMarcXML dpu = new ISO2709ToMarcXML();
         ISO2709ToMarcXMLConfig_V1 config = new ISO2709ToMarcXMLConfig_V1();
-        dpu.configureDirectly(config);
+        dpu.configure((new ConfigurationBuilder()).setDpuConfiguration(config).toString());
 
         // prepare test environment
         TestEnvironment env = new TestEnvironment();
