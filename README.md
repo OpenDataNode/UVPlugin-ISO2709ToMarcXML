@@ -1,23 +1,3 @@
-<!---
-
-This template is intended to be used for describing UnifiedViews plugins as README.md. 
-
-- Copy this README.md to root directory for the plugin to be described.  
-
-- Replace <<descriptive information>> with proper values.
-
-- If no values are available, replace <<descriptive information>> with 'N/A'.
-
-- Use <BR> tag for creation of multi-line cells (in case the length of text exceeds the width of page, it is wrapped automatically to multi-line cell).
-
-- Enclose each configuration parameter name with ** for highlighting the text as bold. 
-
-- Add '(optional)' to Type of input or output if it is not mandatory (all inputs and outputs are mandatory by default). 
-
-- Delete these template comments after the completion of the document.  
-
--->
-
 # T-ISO2709ToMarcXML #
 ----------
 
@@ -26,17 +6,17 @@ This template is intended to be used for describing UnifiedViews plugins as READ
 |                              |                                                               |
 |------------------------------|---------------------------------------------------------------|
 |**Name:**                     |T-ISO2709ToMarcXML                                             |
-|**Description:**              |Transforms ISO 2709 (mrc) files to a XML files on output.      |
+|**Description:**              |Transforms ISO 2709 (marc) files to a XML files on output. |
 |                              |                                                               |
-|**DPU class name:**           |ISO2709ToMarcXML                                               | 
+|**DPU class name:**           |ISO2709ToMarcXML                                               |
 |**Configuration class name:** |ISO2709ToMarcXMLConfig_V1                                      |
-|**Dialogue class name:**      |ISO2709ToMarcXMLVaadinDialog                                   | 
+|**Dialogue class name:**      |ISO2709ToMarcXMLVaadinDialog                                   |
 
 ***
 
 ###Configuration parameters###
 
-|Parameter                        |Description                             |                                                        
+|Parameter                        |Description                             |
 |---------------------------------|----------------------------------------|
 |Skip file on error (checkbox)    |Additional self-descriptive option for load. |
 
@@ -56,7 +36,7 @@ This template is intended to be used for describing UnifiedViews plugins as READ
 
 |Version            |Release notes                                   |
 |-------------------|------------------------------------------------|
-|1.0.0              |N/A                                             |                                
+|1.0.0              | Initial release |
 
 
 ***
@@ -65,5 +45,5 @@ This template is intended to be used for describing UnifiedViews plugins as READ
 
 |Author            |Notes                 |
 |------------------|----------------------|
-|N/A |N/A | 
+|N/A |N/A |
 
