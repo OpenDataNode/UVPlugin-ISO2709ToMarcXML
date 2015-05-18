@@ -1,4 +1,4 @@
-package eu.unifiedviews.plugins.marc;
+package eu.comsode.unifiedviews.plugins.marc;
 
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.ui.CheckBox;
