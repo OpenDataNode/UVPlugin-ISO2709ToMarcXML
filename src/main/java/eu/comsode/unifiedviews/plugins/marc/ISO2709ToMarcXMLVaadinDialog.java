@@ -3,7 +3,7 @@ package eu.comsode.unifiedviews.plugins.marc;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.TextField;
+import com.vaadin.ui.NativeSelect;
 
 import eu.unifiedviews.dpu.config.DPUConfigException;
 import eu.unifiedviews.helpers.dpu.vaadin.dialog.AbstractDialog;
@@ -20,6 +20,8 @@ public class ISO2709ToMarcXMLVaadinDialog extends AbstractDialog<ISO2709ToMarcXM
 
     private ObjectProperty<String> charset = new ObjectProperty<String>("");
 
+    private NativeSelect encodingSelect;
+
     public ISO2709ToMarcXMLVaadinDialog() {
         super(ISO2709ToMarcXML.class);
     }
@@ -31,7 +33,15 @@ public class ISO2709ToMarcXMLVaadinDialog extends AbstractDialog<ISO2709ToMarcXM
         setWidth("100%");
         setHeight("100%");
 
-        mainLayout.addComponent(new TextField(ctx.tr("dialog.charset"), charset));
+        encodingSelect = new NativeSelect(ctx.tr("dialog.charset"));
+        for (Encoding encoding : Encoding.values()) {
+            encodingSelect.addItem(encoding);
+            encodingSelect.setItemCaption(encoding, encoding.getCharset());
+        }
+        encodingSelect.setNullSelectionAllowed(false);
+        encodingSelect.setImmediate(true);
+//        mainLayout.addComponent(new TextField(ctx.tr("dialog.charset"), charset));
+        mainLayout.addComponent(encodingSelect);
         mainLayout.addComponent(new CheckBox(ctx.tr("dialog.skipOnError"), skipOnError));
         mainLayout.setSpacing(true);
         mainLayout.setMargin(true);
