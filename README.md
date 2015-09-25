@@ -1,11 +1,11 @@
 T-ISO2709ToMarcXML
 ----------
 
-### Documentation ###
+### Documentation
 
 * see [Plugin Documentation](./doc/About.md)
 * see [Plugin Documentation](./doc/About_sk.md) (in Slovak)
 
-### Version history ###
+### Version history
 
 * see [Changelog](./CHANGELOG.md)
