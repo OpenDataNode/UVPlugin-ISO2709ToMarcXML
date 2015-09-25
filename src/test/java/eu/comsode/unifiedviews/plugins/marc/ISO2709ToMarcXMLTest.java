@@ -1,4 +1,4 @@
-package eu.unifiedviews.plugins.marc;
+package eu.comsode.unifiedviews.plugins.marc;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -9,8 +9,11 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Set;
 
+import eu.comsode.unifiedviews.plugins.marc.ISO2709ToMarcXML;
+import eu.comsode.unifiedviews.plugins.marc.ISO2709ToMarcXMLConfig_V1;
 import eu.unifiedviews.helpers.dataunit.files.FilesHelper;
 import eu.unifiedviews.helpers.dpu.test.config.ConfigurationBuilder;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;

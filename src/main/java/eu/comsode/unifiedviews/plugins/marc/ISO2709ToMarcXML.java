@@ -1,4 +1,4 @@
-package eu.unifiedviews.plugins.marc;
+package eu.comsode.unifiedviews.plugins.marc;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,12 +7,14 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Date;
 
+import eu.unifiedviews.helpers.dataunit.copy.CopyHelpers;
 import eu.unifiedviews.helpers.dpu.config.ConfigHistory;
 import eu.unifiedviews.helpers.dpu.config.migration.ConfigurationUpdate;
 import eu.unifiedviews.helpers.dpu.context.ContextUtils;
 import eu.unifiedviews.helpers.dpu.exec.AbstractDpu;
 import eu.unifiedviews.helpers.dpu.extension.ExtensionInitializer;
 import eu.unifiedviews.helpers.dpu.extension.faulttolerance.FaultTolerance;
+
 import org.marc4j.MarcReader;
 import org.marc4j.MarcStreamReader;
 import org.marc4j.MarcWriter;
@@ -122,7 +124,8 @@ public class ISO2709ToMarcXML extends AbstractDpu<ISO2709ToMarcXMLConfig_V1> {
                         }
                         writer.close();
                     }
-                    filesOutput.addExistingFile(entry.getSymbolicName(), outputMarcXMLFile.toURI().toASCIIString());
+                    CopyHelpers.copyMetadata(entry.getSymbolicName(), filesInput, filesOutput);
+                    filesOutput.updateExistingFileURI(entry.getSymbolicName(), outputMarcXMLFile.toURI().toASCIIString());
 
                     if (ctx.getExecMasterContext().getDpuContext().isDebugging()) {
                         LOG.debug("Processed {}. file in {}s", index, (System.currentTimeMillis() - start.getTime()) / 1000);
